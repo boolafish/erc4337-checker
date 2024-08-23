@@ -11,7 +11,7 @@ import "forge-std/console2.sol";
 contract InvalidActions {
     uint invalidSlotAccess;
 
-    // Function to intentionally consume a lot of gas
+    // Function to intentionally consume some gas
     function consumeGas() public pure {
         require(true, "not reverting");
         console2.log("consumeGas");
@@ -57,9 +57,12 @@ contract MockAccount is BaseAccount {
         if (attackType == AttackType.FORBIDDEN_OPCODE_BLOCKTIME) {
             // forbidden opcode
             if (block.timestamp < 1) {
+                // to enforce compiler not removing the timestamp opcode block
+                console2.log("called block timestamp");
                 return 0;
             }
         } else if (attackType == AttackType.OUT_OF_GAS) {
+            console2.log("OUT OF GAS");
             bytes memory encodedFunctionCall = abi.encodeWithSignature("consumeGas()", "");
             uint notEnoughGas = 10;
             (bool success, ) = address(invalidActions).call{gas: notEnoughGas}(encodedFunctionCall);

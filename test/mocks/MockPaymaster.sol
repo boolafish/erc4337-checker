@@ -2,12 +2,13 @@
 pragma solidity ^0.8.0;
 
 import "account-abstraction/core/BasePaymaster.sol";
+import {console2} from "forge-std/Test.sol";
 
 /**
  * test paymaster, that pays for everything, without any check.
  */
 contract MockPaymaster is BasePaymaster {
-    uint storedDummyMaxCost = 12345;
+    uint storedDummyMaxCost = 9999999;
 
     enum AttackType {
         NONE,
@@ -24,6 +25,7 @@ contract MockPaymaster is BasePaymaster {
         if (attackType == AttackType.UseStorage) {
             // force accessing the storage
             dummyMaxCost = storedDummyMaxCost;
+            console2.log("access paymaster storage:", dummyMaxCost);
         }
 
         (userOp, userOpHash, maxCost);

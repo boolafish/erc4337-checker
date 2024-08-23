@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 import {Test, console2} from "forge-std/Test.sol";
-import {Vm} from "forge-std/Vm.sol";
 import {EntryPoint} from "account-abstraction/core/EntryPoint.sol";
 import {IEntryPoint} from "account-abstraction/interfaces/IEntryPoint.sol";
 import {UserOperation} from "account-abstraction/interfaces/UserOperation.sol";
@@ -76,6 +75,8 @@ contract ERC4337CheckerTest is Test {
             MockAccount.execute.selector,
             MockAccount.AttackType.FORBIDDEN_OPCODE_BLOCKTIME
         );
+
+        console2.log("mockAccountAddr", mockAccountAddr);
 
         UserOperation memory userOp = _getUnsignedOp(
             mockAccountAddr,
@@ -170,6 +171,9 @@ contract ERC4337CheckerTest is Test {
             noStakePaymaster,
             abi.encode(MockPaymaster.AttackType.UseStorage)
         );
+
+        console2.log("paymaster:", address(noStakePaymaster));
+        console2.log("user sender:", mockAccountAddr);
 
         assertFalse(
             checker.simulateAndVerifyUserOp(vm, userOp, entryPoint)
